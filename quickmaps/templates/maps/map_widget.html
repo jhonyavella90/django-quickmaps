@@ -1,0 +1,41 @@
+{% extends "maps/map.html" %}
+
+{% block extra_js %}
+var lat_field = document.getElementById("{{ input.latitude }}");
+var lon_field = document.getElementById("{{ input.longitude }}");
+
+{% if pin_marker %}
+var marker = new google.maps.Marker({
+    position: latlng,
+    map: map,
+    title: "{{ map.name }}",
+    draggable: true
+});
+google.maps.event.addListener(marker, 'dragend', function() {
+    var position = marker.getPosition();
+    lat_field.value = position.lat();
+    lon_field.value = position.lng();
+});
+{% else %}
+var fired = false;
+google.maps.event.addListener(map, 'click', function(event) {
+    if (!fired) { // FIX: find how to remove google.maps event listeners
+        fired = true;
+        var marker = new google.maps.Marker({
+            position: event.latLng,
+            map: map,
+            title: "{{ map.name }}",
+            draggable: true
+        });
+        lat_field.value = event.latLng.lat();
+        lon_field.value = event.latLng.lng();
+     
+        google.maps.event.addListener(marker, 'dragend', function() {
+            var position = marker.getPosition();
+            lat_field.value = position.lat();
+            lon_field.value = position.lng();
+        });
+    }
+});
+{% endif %}
+{% endblock %}

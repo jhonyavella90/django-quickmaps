@@ -1,0 +1,6 @@
+*~
+*.pyc
+docs/_build/*
+django_quickmaps.egg-info
+build/
+dist/

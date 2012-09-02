@@ -1,0 +1,42 @@
+{% block html %}
+    <!-- HTML map container -->
+    <div id="map-canvas-{{ map.id }}"
+         {% if map.width and location.latitude %}
+            style="width: {{ map.width }}px; height: {{ map.height }}px;"
+         {% endif %}
+         class="vmaps-googlemap">
+    </div>
+{% endblock %}
+
+{% block map_js %}
+    <!-- Map creation script -->
+    <script type="text/javascript">
+        function initialize_map_{{ map.id }}() {
+            var latlng = new google.maps.LatLng({{ location.latitude }}, {{ location.longitude }});
+            var mapElem = document.getElementById("map-canvas-{{ map.id }}");
+
+            {% block map_options_js %}
+            var mapOptions = {
+                zoom: {{ map.zoom }},
+                center: latlng,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+            {% endblock %}
+
+            var map = new google.maps.Map(mapElem, mapOptions);
+
+            {% block extra_js %}
+            var marker = new google.maps.Marker({
+                position: latlng,
+                map: map,
+                title: "{{ map.name }}",
+            });
+            {% endblock %}
+        }
+
+        {% block map_loading_js %}
+        // initialize the map after page loading
+        google.maps.event.addDomListener(window, 'load', initialize_map_{{ map.id }});
+        {% endblock %}
+    </script>
+{% endblock %}
