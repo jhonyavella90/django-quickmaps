@@ -9,6 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 from picklefield.fields import PickledObjectField
 
 from .fields import MapField
+from .utils import LatLngDict
 
 def validate_lat_lng(value):
     """`value` must be a python dictionary and must have only two
@@ -58,7 +59,12 @@ class LatLngField(PickledObjectField):
         dictionary.
         """
         if value is None:
-            value = {}
+            value = LatLngDict()
+        elif not isinstance(value, LatLngDict):
+            ll = LatLngDict()
+            ll['latitude']  = value['latitude']
+            ll['longitude'] = value['longitude']
+            value = ll
         return super(LatLngField, self).get_db_prep_value(
             value, *args, **kwargs
         )
