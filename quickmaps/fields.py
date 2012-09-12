@@ -58,7 +58,12 @@ class MapField(LatLngField):
 
     def __init__(self, *args, **kwargs):
         """Adds an extra `clear_location` field."""
+        widget_attrs = kwargs.pop('widget_attrs', None)
         super(MapField, self).__init__(*args, **kwargs)
+
+        if widget_attrs is not None:
+            self.widget = MapWidget(**widget_attrs)
+
         localize = kwargs.get('localize', False)
         self.fields += (
             forms.BooleanField(initial=False, required=False,
