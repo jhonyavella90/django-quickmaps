@@ -3,6 +3,8 @@ try:
 except ImportError:
     from django import forms
 
+from urllib import urlencode
+
 from django.conf import settings
 from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
@@ -29,15 +31,19 @@ class MapWidget(forms.MultiWidget):
     renders a map after them.
     """
     default_location = {'latitude': 10.49929, 'longitude': -66.900558}  # Caracas.
+    google_maps_api_vars = {'key': settings.GOOGLE_MAPS_KEY, 'sensor': 'false'}
     map_template_name = 'maps/map_widget.html'
     map_width  = 300
     map_height = 300
     map_zoom = 12
 
-    def __init__(self, attrs=None, map_template_name=None, map_attrs=None):
+    def __init__(self, attrs=None, map_template_name=None,
+                 google_maps_api_vars=None, map_attrs=None):
         widgets = (forms.HiddenInput(attrs=attrs),
                    forms.HiddenInput(attrs=attrs),
                    forms.CheckboxInput(attrs=attrs),)
+        self.google_maps_api_vars = google_maps_api_vars or \
+                                    self.google_maps_api_vars
         self.map_template_name = map_template_name or self.map_template_name
         self.map_attrs = {
             'width': self.map_width,
@@ -46,6 +52,13 @@ class MapWidget(forms.MultiWidget):
         }
         self.map_attrs.update(map_attrs or {})
         super(MapWidget, self).__init__(widgets, attrs)
+
+    def _media(self):
+        return forms.Media(
+            js=('http://maps.googleapis.com/maps/api/js?%s' % \
+                urlencode(self.get_google_maps_api_vars()),)
+        )
+    media = property(_media)
 
     def decompress(self, value):
         if value:
@@ -73,6 +86,15 @@ class MapWidget(forms.MultiWidget):
             }
         }
 
+    def get_google_maps_api_vars(self):
+        """Returns the GET vars passed to the google maps js api
+        url. If this vars need to be calculated dinamically you can
+        override this method, but if you just want to replace the
+        default dict with just another dict, just pass it to the
+        `__init__` method.
+        """
+        return self.google_maps_api_vars
+
     def render(self, name, value, attrs=None):
         """Renders the map after the input widgets."""
         map_render = render_to_string(self.map_template_name,
@@ -80,8 +102,3 @@ class MapWidget(forms.MultiWidget):
         widgets = super(MapWidget, self).render(name, value, attrs)
         clear_help_text = _(u'Clear this location.<br />')
         return mark_safe(widgets + clear_help_text + map_render)
-
-
-    class Media:
-        js = ('http://maps.googleapis.com/maps/api/js?key=%s&sensor=false' % \
-              settings.GOOGLE_MAPS_KEY,)
