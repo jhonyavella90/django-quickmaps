@@ -70,7 +70,10 @@ class MapWidget(forms.MultiWidget):
         self.map_attrs['name'] = '%s_map' % name
         # Decide center and whether or not we need to set a marker.
         if value:
-            location = value
+            if type(value) is list:
+                location = {'latitude': value[0], 'longitude': value[1]}
+            else:
+                location = value
             pin_marker = True
         else:
             location = self.default_location
