@@ -58,7 +58,7 @@ class LatLngField(PickledObjectField):
         """If the value is None, we convert it to an empty
         dictionary.
         """
-        if value is None:
+        if not value:
             value = LatLngDict()
         elif not isinstance(value, LatLngDict):
             ll = LatLngDict()
