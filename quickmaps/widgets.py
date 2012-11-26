@@ -103,5 +103,9 @@ class MapWidget(forms.MultiWidget):
         map_render = render_to_string(self.map_template_name,
                                       self.get_context(name, value, attrs))
         widgets = super(MapWidget, self).render(name, value, attrs)
-        clear_help_text = _(u'Clear this location.<br />')
-        return mark_safe(widgets + clear_help_text + map_render)
+
+        clear_help_text = _(u'Clear this location')
+        clear_label = u'<label for="id_geolocation_2" class="control-label">' \
+                '%s.</label><br />' % clear_help_text
+
+        return mark_safe(widgets + clear_label + map_render)
