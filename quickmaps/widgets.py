@@ -82,7 +82,7 @@ class MapWidget(forms.MultiWidget):
                     location = self.default_location
                     pin_marker = False
             else:
-                location = value
+                location = self.default_location
 
         return {
             'location': location,
