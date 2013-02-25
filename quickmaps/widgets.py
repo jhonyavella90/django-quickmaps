@@ -72,6 +72,7 @@ class MapWidget(forms.MultiWidget):
         # Decide center and whether or not we need to set a marker.
         pin_marker = value is not None
 
+        location = self.default_location
         if value:  # if there's a value, we define the location dict
             if type(value) is list:
                 if len(value) >= 2 and not \
@@ -82,7 +83,7 @@ class MapWidget(forms.MultiWidget):
                     location = self.default_location
                     pin_marker = False
             else:
-                location = self.default_location
+                location = value
 
         return {
             'location': location,
