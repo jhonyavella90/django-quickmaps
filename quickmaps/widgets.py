@@ -68,16 +68,21 @@ class MapWidget(forms.MultiWidget):
     def get_context(self, name, value, attrs):
         self.map_attrs['id'] = attrs['id']
         self.map_attrs['name'] = '%s_map' % name
+
         # Decide center and whether or not we need to set a marker.
-        if value:
+        pin_marker = value is not None
+
+        if value:  # if there's a value, we define the location dict
             if type(value) is list:
-                location = {'latitude': value[0], 'longitude': value[1]}
+                if len(value) >= 2 and not \
+                   filter(lambda v: v is None or v == '', value):
+                    # it's a list without errors.
+                    location = {'latitude': value[0], 'longitude': value[1]}
+                else:
+                    location = self.default_location
+                    pin_marker = False
             else:
                 location = value
-            pin_marker = True
-        else:
-            location = self.default_location
-            pin_marker = False
 
         return {
             'location': location,
