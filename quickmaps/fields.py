@@ -38,7 +38,9 @@ class LatLngField(forms.MultiValueField):
         super(LatLngField, self).__init__(fields, *args, **kwargs)
 
     def compress(self, data_list):
-        if not data_list:
+        if not data_list or \
+           (len(data_list) >= 2 and data_list[0] is None and \
+            data_list[1] is None):
             return {}
         if data_list[0] in validators.EMPTY_VALUES:
             raise ValidationError(self.error_messages['invalid_latitude'])
