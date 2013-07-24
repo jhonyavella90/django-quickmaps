@@ -55,7 +55,7 @@ class MapWidget(forms.MultiWidget):
 
     def _media(self):
         return forms.Media(
-            js=('http://maps.googleapis.com/maps/api/js?%s' % \
+            js=('//maps.googleapis.com/maps/api/js?%s' % \
                 urlencode(self.get_google_maps_api_vars()),)
         )
     media = property(_media)
