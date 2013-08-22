@@ -12,7 +12,9 @@
     <!-- Map creation script -->
     <script type="text/javascript">
         function initialize_map_{{ map.id }}() {
-            var latlng = new google.maps.LatLng({{ location.latitude }}, {{ location.longitude }});
+            lat = {{ location.latitude }};
+            lon = {{ location.longitude }};
+            var latlng = new google.maps.LatLng(lat, lon);
             var mapElem = document.getElementById("map-canvas-{{ map.id }}");
 
             {% block map_options_js %}
