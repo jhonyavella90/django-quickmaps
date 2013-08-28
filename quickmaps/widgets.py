@@ -106,6 +106,7 @@ class MapWidget(forms.MultiWidget):
 
     def render(self, name, value, attrs=None):
         """Renders the map after the input widgets."""
+        attrs = attrs or self.attrs
         map_render = render_to_string(self.map_template_name,
                                       self.get_context(name, value, attrs))
         widgets = super(MapWidget, self).render(name, value, attrs)
