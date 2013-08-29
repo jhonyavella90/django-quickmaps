@@ -11,9 +11,16 @@
 {% block map_js %}
     <!-- Map creation script -->
     <script type="text/javascript">
-        function initialize_map_{{ map.id }}() {
-            lat = {{ location.latitude }};
-            lon = {{ location.longitude }};
+        function initialize_map_{{ map.id }}(latitude, longitude) {
+
+            if ((latitude != undefined) && (longitude != undefined)) {
+                lat = latitude;
+                lon = longitude;
+            } else {
+                lat = {{ location.latitude }};
+                lon = {{ location.longitude }};
+            }
+
             var latlng = new google.maps.LatLng(lat, lon);
             var mapElem = document.getElementById("map-canvas-{{ map.id }}");
 
