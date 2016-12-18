@@ -1,14 +1,15 @@
 from django.template.loader import render_to_string
-from django.utils.encoding import StrAndUnicode
+from django.utils.encoding import python_2_unicode_compatible
 
 
-class LatLngDict(dict, StrAndUnicode):
+@python_2_unicode_compatible
+class LatLngDict(dict):
     """A two key'd dictionary for latitude and longitude values that
     knows how to display itself in various formats.
     """
     template_name = None
 
-    def __unicode__(self):
+    def __str__(self):
         return self.as_comma_separated()
 
     def as_comma_separated(self):
